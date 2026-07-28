@@ -22,7 +22,6 @@ jobs:
 
       - name: Decode Kubeconfig
         run: |
-#          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > /tmp/kubeconfig
           printf '%s' '${{ secrets.KUBE_CONFIG_DATA }}' | base64 --decode > /tmp/kubeconfig
           chmod 600 /tmp/kubeconfig
 
