@@ -30,6 +30,8 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tms-service:latest
+          secrets: |
+            GH_TOKEN=${{ secrets.GH_TOKEN }}
 
   lint-and-test-chart:
     runs-on: ubuntu-latest
