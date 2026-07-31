@@ -45,4 +45,4 @@ jobs:
         env:
           KUBECONFIG: /tmp/kubeconfig
         run: |
-          helm upgrade --install tms-service oci://docker.io/${{ secrets.DOCKERHUB_USERNAME }}/tms-service --version ${{ github.event.inputs.chart_version }} --namespace processor --create-namespace
+          helm upgrade --install tms-service oci://docker.io/${{ secrets.DOCKERHUB_USERNAME }}/tms-service --version ${{ github.event.inputs.chart_version }} -n processor --create-namespace --atomic --wait=true --timeout=900s --cleanup-on-fail=true
