@@ -940,3 +940,97 @@ A [registry](https://github.com/tazama-lf/docs/blob/f292c9ddabf52d6fe62addc1c619
 | `EVENT_HISTORY_DATABASE_USER`      | PostgreSQL username             | `root`          |
 | `EVENT_HISTORY_DATABASE_PASSWORD`  | PostgreSQL database password    | `password`      |
 | `EVENT_HISTORY_DATABASE_CERT_PATH` | PostgreSQL certificate path     | `/path/to/cert` |
+
+
+## Helm Chart Configuration
+
+1. Create helm templates folder
+```shell
+mkdir charts
+
+helm create charts/tms-service
+```
+
+2. Modify values.yaml in charts/tms-service to match the application.
+```yaml
+image:
+  repository: tazama-lf/tms-service
+  tag: latest
+  
+sidecar:
+  name: tazama-lf/sidecar
+  image:
+    repository: tazama-lf/sidecar
+    tag: latest
+    
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 3000
+  
+env:
+  mode: "http"
+  upstream_url: "http://0.0.0.0:3000"
+  exec_timeout: "10s"
+  write_timeout: "15s"
+  read_timeout: "15s"
+  prefix_logs: "false"
+  FUNCTION_NAME: "transaction-monitoring-service"
+  NODE_ENV: "production"
+  PORT: 3000
+  QUOTING: "false"
+  SERVER_URL: ""
+  MAX_CPU: "2"
+  ...
+```
+
+3. Modify deployment.yaml in charts/tms-service/templates to include sidecar container and env variables.
+```yaml
+containers:
+  - name: {{ .Chart.Name }}
+    image: {{ .Values.image.repository }}:{{ .Values.image.tag }}   
+    env:
+      {{- range $key, $val := .Values.env }}
+      - name: {{ $key | upper }}
+        value: {{ $val | quote }}
+      {{- end }}
+  - name: {{ .Values.sidecar.name }}
+    image: {{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}
+
+```
+
+4. Modify service.yaml in charts/tms-service/templates to expose the service and sidecar port.
+```yaml
+```
+
+5. If the application/service requires external access, modify ingress section in values.yaml to expose the service (provide cluster-issuer annotation for cert provisioning).
+```yaml
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+     cert-manager.io/cluster-issuer: letsencrypt-tazama-lf
+  hosts:
+    - host: tms-service.sandbox.tazama.lf
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: tms-service-tls
+      hosts:
+        - tms-service.sandbox.tazama.lf
+```
+  
+
+
+#### Helm Chart Workflows
+
+1. Provide secret variables below in the project on GitHub.
+```
+DOCKERHUB_USERNAME=
+DOCKERHUB_PASSWORD=
+DOCKERHUB_REPOSITORY=
+DOCKERHUB_TAG=
+KUBE_CONFIG_DATA=(**base64 encoded kubeconfig data)
+```

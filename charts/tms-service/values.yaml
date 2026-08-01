@@ -135,7 +135,7 @@ affinity: {}
 
 env:
   mode: "http"
-  upstream_url: "http://127.0.0.1:3000"
+  upstream_url: "http://0.0.0.0:3000"
   exec_timeout: "10s"
   write_timeout: "15s"
   read_timeout: "15s"
@@ -149,7 +149,7 @@ env:
   AUTHENTICATED: "false"
   CERT_PATH_PUBLIC: ""
   REDIS_DATABASE: 0
-  REDIS_AUTH: "Red!!!$$"
+  REDIS_AUTH: ""
   REDIS_SERVERS: "redis-master.platforms.svc.cluster.local"
   REDIS_IS_CLUSTER: ""
   DISTRIBUTED_CACHETTL: 300
