@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Default values for tms-service.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -7,17 +8,22 @@ replicaCount: 1
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: booora/tms-service
+  repository: tazamaorg/tms-service
   # This sets the pull policy for images.
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  # The image tag is intentionally left blank.
+  # It is dynamically set by the CI/CD pipeline during deployment
+  # based on the version in package.json.
+  tag: ""
 
 sidecar:
   name: tms-sidecar-rel-1-0-0
   image:
-    repository: booora/tms-service
-    tag: "latest"
+    repository: tazamaorg/tms-service
+    # The image tag is intentionally left blank.
+    # It is dynamically set by the CI/CD pipeline during deployment
+    # based on the version in package.json.
+    tag: ""
     pullPolicy: Always
   port: 5000
 
@@ -71,18 +77,18 @@ ingress:
   enabled: true
   className: "nginx"
   annotations:
-#     kubernetes.io/ingress.class: nginx
-     cert-manager.io/cluster-issuer: letsencrypt-pesalink-ke
+     # If cert-manager is installed, use the following annotation to automatically create a TLS secret
+     cert-manager.io/cluster-issuer: tazama-lf
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: tms-service.approval.pesalink.ke
+    - host: tms-service.sandbox.tazama.lf
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - secretName: tms-service-tls
       hosts:
-        - tms-service.approval.pesalink.ke
+        - tms-service.sandbox.tazama.lf
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
