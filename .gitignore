@@ -70,8 +70,4 @@ template
 # certificates
 *.crt
 
-# Ignore all workflow files except specific ones
- .github/workflows/*
- !.github/workflows/helm-package-build.yml
- !.github/workflows/helm-package-deploy.yml
- .idea
+.idea
