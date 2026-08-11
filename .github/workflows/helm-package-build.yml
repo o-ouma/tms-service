@@ -63,30 +63,30 @@ jobs:
 
       - name: Push Helm chart to Docker Hub
         run: |
-          helm push ${{ env.REPO_NAME }}-${{ steps.pkg_version.outputs.VERSION }}.tgz oci://docker.io/tazamaorg
+          helm push ${{ env.REPO_NAME }}-helm-${{ steps.pkg_version.outputs.VERSION }}.tgz oci://docker.io/booora
 
-      - name: Resolve source PR
-        id: src_pr
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          PR_URL=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls" --jq '.[0].html_url // empty' 2>/dev/null || true)
-          echo "PR_URL=${PR_URL}" >> "$GITHUB_OUTPUT"
-
-      - name: Send Slack Notification
-        if: always()
-        continue-on-error: true
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SERVICE_NAME: ${{ env.REPO_NAME }} (Helm)
-          CHART_REPOSITORY: oci://docker.io/tazamaorg/${{ env.REPO_NAME }}:${{ steps.pkg_version.outputs.VERSION }}
-          PR_URL: ${{ steps.src_pr.outputs.PR_URL }}
-          JOB_STATUS: ${{ job.status }}
-          BRANCH_NAME: ${{ github.ref_name }}
-          COMMIT_SHA: ${{ github.sha }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          [ -z "$SLACK_WEBHOOK_URL" ] && echo "SLACK_WEBHOOK_URL is not configured. Skipping Slack notification." && exit 0
-          SHORT_SHA="${COMMIT_SHA:0:7}"
-          curl --fail-with-body -sS -X POST -H 'Content-type: application/json' --data "$(jq -n --arg title "$([ "$JOB_STATUS" = "success" ] && echo "New Helm Chart published :chart_with_upwards_trend:" || echo "Helm chart publish failed :x:")" --arg service "$SERVICE_NAME" --arg status "$JOB_STATUS" --arg chart "$CHART_REPOSITORY" --arg branch "$BRANCH_NAME" --arg sha "$SHORT_SHA" --arg pr "$PR_URL" --arg run "$RUN_URL" '{blocks:[{type:"header",text:{type:"plain_text",text:$title,emoji:true}},{type:"section",fields:([{type:"mrkdwn",text:("*Service:*\n"+$service)},{type:"mrkdwn",text:("*Status:*\n"+$status)},{type:"mrkdwn",text:("*Chart:*\n`"+$chart+"`")},{type:"mrkdwn",text:("*Branch:*\n`"+$branch+"`")},{type:"mrkdwn",text:("*Commit:*\n`"+$sha+"`")},{type:"mrkdwn",text:("*Workflow Run:*\n<"+$run+"|Open run>")}]+(if $pr != "" then [{type:"mrkdwn",text:("*Source PR:*\n<"+$pr+"|Open PR>")}] else [] end))}]}')" "$SLACK_WEBHOOK_URL"
+#      - name: Resolve source PR
+#        id: src_pr
+#        continue-on-error: true
+#        env:
+#          GH_TOKEN: ${{ github.token }}
+#        run: |
+#          PR_URL=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls" --jq '.[0].html_url // empty' 2>/dev/null || true)
+#          echo "PR_URL=${PR_URL}" >> "$GITHUB_OUTPUT"
+#
+#      - name: Send Slack Notification
+#        if: always()
+#        continue-on-error: true
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#          SERVICE_NAME: ${{ env.REPO_NAME }} (Helm)
+#          CHART_REPOSITORY: oci://docker.io/tazamaorg/${{ env.REPO_NAME }}:${{ steps.pkg_version.outputs.VERSION }}
+#          PR_URL: ${{ steps.src_pr.outputs.PR_URL }}
+#          JOB_STATUS: ${{ job.status }}
+#          BRANCH_NAME: ${{ github.ref_name }}
+#          COMMIT_SHA: ${{ github.sha }}
+#          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#        run: |
+#          [ -z "$SLACK_WEBHOOK_URL" ] && echo "SLACK_WEBHOOK_URL is not configured. Skipping Slack notification." && exit 0
+#          SHORT_SHA="${COMMIT_SHA:0:7}"
+#          curl --fail-with-body -sS -X POST -H 'Content-type: application/json' --data "$(jq -n --arg title "$([ "$JOB_STATUS" = "success" ] && echo "New Helm Chart published :chart_with_upwards_trend:" || echo "Helm chart publish failed :x:")" --arg service "$SERVICE_NAME" --arg status "$JOB_STATUS" --arg chart "$CHART_REPOSITORY" --arg branch "$BRANCH_NAME" --arg sha "$SHORT_SHA" --arg pr "$PR_URL" --arg run "$RUN_URL" '{blocks:[{type:"header",text:{type:"plain_text",text:$title,emoji:true}},{type:"section",fields:([{type:"mrkdwn",text:("*Service:*\n"+$service)},{type:"mrkdwn",text:("*Status:*\n"+$status)},{type:"mrkdwn",text:("*Chart:*\n`"+$chart+"`")},{type:"mrkdwn",text:("*Branch:*\n`"+$branch+"`")},{type:"mrkdwn",text:("*Commit:*\n`"+$sha+"`")},{type:"mrkdwn",text:("*Workflow Run:*\n<"+$run+"|Open run>")}]+(if $pr != "" then [{type:"mrkdwn",text:("*Source PR:*\n<"+$pr+"|Open PR>")}] else [] end))}]}')" "$SLACK_WEBHOOK_URL"

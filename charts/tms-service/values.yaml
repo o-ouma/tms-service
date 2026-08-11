@@ -7,22 +7,22 @@ replicaCount: 1
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: tazamaorg/tms-service
+  repository: booora/tms-service
   # This sets the pull policy for images.
   pullPolicy: Always
   # The image tag is intentionally left blank.
   # It is dynamically set by the CI/CD pipeline during deployment
   # based on the version in package.json.
-  tag: ""
+  tag: "4.0.0"
 
 sidecar:
-  name: tms-sidecar-rel-1-0-0
+  name: tms-sidecar-rel-4-0-0
   image:
-    repository: tazamaorg/tms-service
+    repository: booora/tms-service
     # The image tag is intentionally left blank.
     # It is dynamically set by the CI/CD pipeline during deployment
     # based on the version in package.json.
-    tag: ""
+    tag: "4.0.0"
     pullPolicy: Always
   port: 5000
 
@@ -77,17 +77,17 @@ ingress:
   className: "nginx"
   annotations:
      # If cert-manager is installed, use the following annotation to automatically create a TLS secret
-     cert-manager.io/cluster-issuer: tazama-lf
+     cert-manager.io/cluster-issuer: letsencrypt-pesalink-ke
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: tms-service.sandbox.tazama.lf
+    - host: tms-service.approval.pesalink.ke
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - secretName: tms-service-tls
       hosts:
-        - tms-service.sandbox.tazama.lf
+        - tms-service.approval.pesalink.ke
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
