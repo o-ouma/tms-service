@@ -90,14 +90,14 @@ jobs:
 
       - name: Render Helm chart templates
         run: |
-          helm template tms-service ./charts/tms-service --set image.repository=tazamaorg/${{ env.REPO_NAME }} --set image.tag=${{ steps.pkg_version.outputs.VERSION }}
+          helm template tms-service ./charts/tms-service --set image.repository=booora/${{ env.REPO_NAME }} --set image.tag=${{ steps.pkg_version.outputs.VERSION }}
 
       - name: Package Helm chart
         run: helm package ./charts/tms-service --version ${{ steps.pkg_version.outputs.VERSION }} --app-version ${{ steps.pkg_version.outputs.VERSION }}
 
       - name: Push Helm chart to Docker Hub
         run: |
-          helm push ${{ env.REPO_NAME }}-helm-${{ steps.pkg_version.outputs.VERSION }}.tgz oci://docker.io/tazamaorg
+          helm push ${{ env.REPO_NAME }}-helm-${{ steps.pkg_version.outputs.VERSION }}.tgz oci://docker.io/booora
 
 #      - name: Resolve source PR
 #        id: src_pr

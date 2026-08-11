@@ -74,7 +74,7 @@ jobs:
         env:
           KUBECONFIG: /tmp/kubeconfig
         run: |
-          helm upgrade --install ${{ env.REPO_NAME }} oci://docker.io/tazamaorg/${{ env.REPO_NAME }} --version ${{ steps.get_version.outputs.VERSION }} -n processor --create-namespace --atomic --wait=true --timeout=900s --cleanup-on-fail=true
+          helm upgrade --install ${{ env.REPO_NAME }} oci://docker.io/booora/${{ env.REPO_NAME }}-helm --version ${{ steps.get_version.outputs.VERSION }} -n processor --create-namespace --atomic --wait=true --timeout=900s --cleanup-on-fail=true
 
 #      - name: Resolve source PR
 #        id: src_pr
