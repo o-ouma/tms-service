@@ -13,7 +13,7 @@ spec:
       protocol: TCP
       name: http
     - port: {{ .Values.sidecar.port }}
-      targetPort: {{ .Values.sidecar.port }}
+      targetPort: http-sidecar
       protocol: TCP
       name: sidecar
   selector:

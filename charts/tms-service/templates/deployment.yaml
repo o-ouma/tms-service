@@ -76,7 +76,7 @@ spec:
           image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
           imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}
           ports:
-            - name: http
+            - name: http-sidecar
               containerPort: {{ .Values.sidecar.port }}
               protocol: TCP
           resources: {}
