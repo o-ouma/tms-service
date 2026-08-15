@@ -16,9 +16,9 @@ image:
   tag: "4.0.0"
 
 sidecar:
-  name: tms-sidecar-rel-4-0-0
+  name: tms-event-sidecar
   image:
-    repository: booora/tms-service
+    repository: booora/event-sidecar
     # The image tag is intentionally left blank.
     # It is dynamically set by the CI/CD pipeline during deployment
     # based on the version in package.json.
@@ -63,9 +63,6 @@ securityContext:
   capabilities:
     drop:
       - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
@@ -80,17 +77,17 @@ ingress:
   className: "nginx"
   annotations:
      # If cert-manager is installed, use the following annotation to automatically create a TLS secret
-     cert-manager.io/cluster-issuer: letsencrypt-pesalink-ke
+     cert-manager.io/cluster-issuer: letsencrypt-issuer
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: tms-service.approval.pesalink.ke
+    - host: tms-service.approval.test.lf
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - secretName: tms-service-tls
       hosts:
-        - tms-service.approval.pesalink.ke
+        - tms-service.approval.test.lf
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

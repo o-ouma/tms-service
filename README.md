@@ -965,9 +965,9 @@ image:
   tag: latest
   
 sidecar:
-  name: tazama-lf/sidecar
+  name: tazama-lf-sidecar
   image:
-    repository: tazama-lf/sidecar
+    repository: tazama-lf/event-sidecar
     tag: latest
   port: 5000
     
