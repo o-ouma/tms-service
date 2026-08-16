@@ -75,6 +75,11 @@ spec:
         - name: {{ .Values.sidecar.name }}
           image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
           imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}
+          env:
+            {{- range $key, $val := .Values.sidecar.env }}
+            - name: {{ $key | upper }}
+              value: {{ $val | quote }}
+            {{- end }}
           ports:
             - name: http-sidecar
               containerPort: {{ .Values.sidecar.port }}
